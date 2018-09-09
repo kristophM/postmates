@@ -7,7 +7,7 @@ module FaradayMiddleware
     def call(env)
       @app.call(env).on_complete do |response|
         response_hash = JSON.parse(response.body)
-        msg = "#{response[:status]} #{response_hash['message']}"
+        msg = "#{response[:status]} #{response_hash['message']} #{response_hash['params'].to_json}"
 
         case response[:status]
         when 400 ; raise Postmates::BadRequest,          msg
