@@ -8,7 +8,9 @@ module FaradayMiddleware
       @app.call(env).on_complete do |response|
         response_hash = JSON.parse(response.body)
         msg = "#{response[:status]} #{response_hash['message']} #{response_hash['params'].to_json}"
-
+        if response_hash['code'] == 'couriers_busy'
+          raise Postmates::CouriersBusy, msg 
+        end
         case response[:status]
         when 400 ; raise Postmates::BadRequest,          msg
         when 401 ; raise Postmates::Unauthorized,        msg
